@@ -4,14 +4,14 @@ import react from '@Vitejs/plugin-react'
 import typescript from '@rollup/plugin-typescript'
 import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js'
 
-export default defineConfig(() => ({
+export default defineConfig({
   plugins: [react(), typescript(), cssInjectedByJsPlugin()],
   server: {
     port: 3000,
     strictPort: true
   },
   preview: {
-      allowedHosts: true
+    allowedHosts: true
   },
   define: {
     'process.env.NODE_ENV': '"production"'
@@ -21,7 +21,7 @@ export default defineConfig(() => ({
       formats: ['umd'],
       entry: resolve(__dirname, 'src/main.tsx'),
       name: 'index',
-      fileName: (_format) => `bundle.js`,
+      fileName: "bundle.js",
     },
     cssCodeSplit: false, // Ensures a single CSS file output
     minify: true,
@@ -32,4 +32,4 @@ export default defineConfig(() => ({
       },
     },
   },
-}))
+})
