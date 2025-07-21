@@ -1,0 +1,47 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: 'Inter', 'Segoe UI', 'Roboto', sans-serif;
+    background-color: #f5f8fa;
+    color: #333;
+    line-height: 1.6;
+  }
+  
+  .container {
+    margin: 0 auto;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+  
+  h1 {
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    color: #2c3e50;
+    font-weight: 700;
+  }
+  
+
+
+  a {
+    color: #3498db;
+    text-decoration: none;
+    position: relative;
+  }
+  
+  a:hover {
+    text-decoration: underline;
+  }
+  
+  span {
+    color: #7f8c8d;
+    font-size: 0.95rem;
+    max-width: 80%;
+  }
