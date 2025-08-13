@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import './App.css'
 import { Button, Card, Input } from '@epilot/concorde-elements'
 
@@ -38,10 +38,22 @@ type AppProps<T> = {
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function App(_props: AppProps<unknown>) {
+
+ 
+function App(props: AppProps<unknown>) {
   const [count, setCount] = useState(0)
   const [value, setValue] = useState('')
+
+  const callback = useCallback((partialState: unknown)  => {
+    console.log("🚀 ~ App ~ block state has changed:", partialState)
+  }, [])
+
+  useEffect(() => {
+    const unsubscribe = props.container.subscribe('fd053889-a340-42f8-89b2-e5c842a7c047', callback)
+
+    return () => void unsubscribe()
+  }, [props.container.subscribe, callback, props.container])
+
   return (
     <div className='container'>
       <Card>
