@@ -2,7 +2,44 @@ import { useState } from 'react'
 import './App.css'
 import { Button, Card, Input } from '@epilot/concorde-elements'
 
-function App() {
+type AppProps<T> = {
+  container: {
+    /**
+     * a call back function to set the value of the custom block
+     */
+    setValue: React.Dispatch<T>
+    /**
+     * the value of the custom block
+     */
+    value?: T
+    /**
+     * Stringified theme json object.
+     */
+    theme?: string
+    /**
+     * any errors that the block might have. ex. value is required
+     */
+    errors?: string
+    /**
+     * if the block is required or not
+     * it is up to the implementer to display it in a good way
+     */
+    required?: boolean
+    /**
+     * extra arguments that the implementer might need which the configuring user has added them in the Journey Builder
+     */
+    args?: string
+    /**
+     * Allow listening to state changes for the given block.
+     * 
+     * @returns unsubscribe function
+     */
+    subscribe: (blockId: string, fn: (blockState: unknown) => void) => () => void
+  }
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function App(_props: AppProps<unknown>) {
   const [count, setCount] = useState(0)
   const [value, setValue] = useState('')
   return (

@@ -6,6 +6,7 @@
     "build": "turbo run build",
     "dev": "turbo run dev",
     "custom-block:dev": "turbo run dev --filter @component/custom-journey-block",
+    "custom-capability:dev": "turbo run dev --filter @component/custom-capability",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "check-types": "turbo run check-types"

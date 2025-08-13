@@ -12,7 +12,8 @@ const CustomBlock = r2wc(App, {
     // the r2wc lib will parse the string value for us
     theme: 'json',
     args: 'json',
-    setValue: 'function'
+    setValue: 'function',
+    subscribe: 'function'
   }
 })
 
