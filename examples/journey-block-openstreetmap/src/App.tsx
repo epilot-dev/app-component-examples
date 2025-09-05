@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { AddressMap } from "./Map";
 
 type AppProps<T> = {
@@ -38,7 +38,6 @@ type AppProps<T> = {
 }
 
 type Address = {
-  _isValid: boolean
   city: string
   countryCode: string
   houseNumber: string
@@ -52,17 +51,19 @@ export function App(props: AppProps<Address>) {
   const [address, setAddress] = useState<Address | null>(null)
 
   const callback = useCallback((partialState: Address)  => {
-    if(!partialState._isValid) return;
-    
-    if(partialState.city && partialState.houseNumber && partialState.streetName && partialState.zipCode) {
+    const safe = (partialState as any) ?? {}
+    const { city, houseNumber, streetName, zipCode, countryCode } = safe as Partial<Address>
+
+    if (city && houseNumber && streetName && zipCode) {
       setAddress({
-        city: partialState.city,
-        houseNumber: partialState.houseNumber,
-        streetName: partialState.streetName,
-        zipCode: partialState.zipCode,
-        _isValid: partialState._isValid,
-        countryCode: partialState.countryCode
+        city,
+        houseNumber,
+        streetName,
+        zipCode,
+        countryCode: countryCode ?? ""
       })
+    } else {
+      setAddress(null)
     }
   }, [])
 
@@ -72,7 +73,25 @@ export function App(props: AppProps<Address>) {
     return () => void unsubscribe()
   }, [props.container.subscribe, callback, props.container])
 
+  const args = useMemo(() => {
+    return props.container.args ? JSON.parse(props.container.args) : undefined
+  }, [props.container.args])
+
+  const center = useMemo(() => {
+    const candidate = (args as any)?.default_city
+
+    // String form: "lat,lng"
+    if (typeof candidate === "string") {
+      const parts = candidate.split(",").map(p => Number(p.trim()))
+      if (parts.length === 2 && Number.isFinite(parts[0]) && Number.isFinite(parts[1])) {
+        return [parts[0], parts[1]] as [number, number]
+      }
+    }
+
+    return undefined
+  }, [args])
+
   return (
-    <AddressMap street={address?.streetName} number={address?.houseNumber} city={address?.city} />
+    <AddressMap center={center} street={address?.streetName} number={address?.houseNumber} city={address?.city} />
   );
 }

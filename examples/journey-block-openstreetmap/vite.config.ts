@@ -16,9 +16,7 @@ export default defineConfig({
   define: {
     'process.env.NODE_ENV': '"production"'
   },
-  
   build: {
-    
     lib: {
       formats: ['umd'],
       entry: resolve(__dirname, 'src/main.tsx'),

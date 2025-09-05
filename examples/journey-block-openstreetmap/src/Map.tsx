@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import { Card } from "@epilot/concorde-elements";
 
 type Props = {
   street?: string;
   number?: string;
   city?: string;
+  center?: [number, number];
 };
 
 // Use a data URL for the marker icon to ensure it's embedded in the bundle
@@ -17,20 +19,23 @@ const markerIcon = L.icon({
 
 
 
-export const AddressMap = ({ street, number, city }: Props) => {
+export const AddressMap = ({ street, number, city, center }: Props) => {
   const [coords, setCoords] = useState<[number, number] | null>(null);
   const mapRef = useRef<L.Map | null>(null);
   const markerRef = useRef<L.Marker | null>(null);
 
-  // Default to Germany center/zoom
-  const defaultCenter: [number, number] = [51.1657, 10.4515];
-  const defaultZoom = 5;
+
+  const getDefaultCenterAndZoom = () => ({
+    center: center ? center : ([51.1657, 10.4515] as [number, number]),
+    zoom: center ? 12 : 5,
+  })
 
   // Initialize map once
   useEffect(() => {
     if (mapRef.current) return;
 
-    const map = L.map("map").setView(defaultCenter, defaultZoom);
+    const { center: initialCenter, zoom: initialZoom } = getDefaultCenterAndZoom()
+    const map = L.map("map").setView(initialCenter, initialZoom);
     mapRef.current = map;
 
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -50,7 +55,8 @@ export const AddressMap = ({ street, number, city }: Props) => {
     if (!allPresent) {
       setCoords(null);
       if (mapRef.current) {
-        mapRef.current.setView(defaultCenter, defaultZoom);
+        const { center: fallbackCenter, zoom: fallbackZoom } = getDefaultCenterAndZoom()
+        mapRef.current.setView(fallbackCenter, fallbackZoom);
         if (markerRef.current) {
           markerRef.current.remove();
           markerRef.current = null;
@@ -97,12 +103,23 @@ export const AddressMap = ({ street, number, city }: Props) => {
     }
   }, [coords]);
 
+  // React to changes in the provided center when no coords are set
+  useEffect(() => {
+    if (!mapRef.current) return;
+    if (coords) return; // when we have geocoded coords, they take precedence
+
+    const { center: newCenter, zoom: newZoom } = getDefaultCenterAndZoom()
+    mapRef.current.setView(newCenter, newZoom)
+  }, [center, coords])
+
   return (
-    <div
-      id="map"
-      style={{ height: "300px", width: "100%", borderRadius: "12px" }}
-    >
-      {/* No message needed; default view is Germany until address is complete */}
-    </div>
+    <Card>
+      <div
+        id="map"
+        style={{ height: "300px", width: "100%", borderRadius: "12px" }}
+      >
+        {/* No message needed; default view is Germany until address is complete */}
+      </div>
+    </Card>
   );
 }
