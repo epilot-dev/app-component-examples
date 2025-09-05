@@ -47,7 +47,7 @@ type Address = {
 
 const BLOCK_ID = '490511c8-8efc-4173-a2db-b9a16b0c7c00'
 
-export function App(props: AppProps<Address>) {
+export function App(props: AppProps<unknown>) {
   const [address, setAddress] = useState<Address | null>(null)
 
   const callback = useCallback((partialState: Address)  => {
@@ -91,7 +91,11 @@ export function App(props: AppProps<Address>) {
     return undefined
   }, [args])
 
+  const addCoordsToMapping = useCallback((coords: [number, number] | null) => {
+    props.container.setValue(JSON.stringify({ lat: coords?.[0], lng: coords?.[1] }))
+  }, [args, props.container.setValue])
+
   return (
-    <AddressMap center={center} street={address?.streetName} number={address?.houseNumber} city={address?.city} />
+    <AddressMap center={center} street={address?.streetName} number={address?.houseNumber} city={address?.city} addCoordsToMapping={addCoordsToMapping} />
   );
 }

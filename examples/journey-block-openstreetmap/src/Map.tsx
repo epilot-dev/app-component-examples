@@ -8,6 +8,7 @@ type Props = {
   number?: string;
   city?: string;
   center?: [number, number];
+  addCoordsToMapping?: (coords: [number, number] | null) => void;
 };
 
 // Use a data URL for the marker icon to ensure it's embedded in the bundle
@@ -19,7 +20,7 @@ const markerIcon = L.icon({
 
 
 
-export const AddressMap = ({ street, number, city, center }: Props) => {
+export const AddressMap = ({ street, number, city, center, addCoordsToMapping }: Props) => {
   const [coords, setCoords] = useState<[number, number] | null>(null);
   const mapRef = useRef<L.Map | null>(null);
   const markerRef = useRef<L.Marker | null>(null);
@@ -73,7 +74,9 @@ export const AddressMap = ({ street, number, city, center }: Props) => {
       const data = await res.json();
       if (data && data[0]) {
         setCoords([parseFloat(data[0].lat), parseFloat(data[0].lon)]);
+        addCoordsToMapping?.(coords as [number, number]);
       } else {
+        addCoordsToMapping?.(null);
         setCoords(null);
       }
     };
